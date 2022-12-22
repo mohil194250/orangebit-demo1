@@ -20,14 +20,14 @@ pipeline {
         }
         stage ('deploy to dev') {
             steps {
-                sh "kubectl create namespace ${prams.GIT_FEATURE_BRANCH}"
-                sh "helm upgrade --install eks-test-dev --set image.repository=humancloudak/k8-poc --set image.tag=latest --set image.pullPolicy=Always bitnami/tomcat -n ${prams.GIT_FEATURE_BRANCH}"
+                sh "kubectl create namespace ${GIT_FEATURE_BRANCH}"
+                sh "helm upgrade --install eks-test-dev --set image.repository=humancloudak/k8-poc --set image.tag=latest --set image.pullPolicy=Always bitnami/tomcat -n ${GIT_FEATURE_BRANCH}"
             }
         }
 
         stage ('deploy to uat') {
             steps {
-                sh "helm upgrade --install eks-test-uat --set image.repository=humancloudak/k8-poc --set image.tag=latest --set image.pullPolicy=Always bitnami/tomcat -n ${prams.GIT_FEATURE_BRANCH}"
+                sh "helm upgrade --install eks-test-uat --set image.repository=humancloudak/k8-poc --set image.tag=latest --set image.pullPolicy=Always bitnami/tomcat -n ${GIT_FEATURE_BRANCH}"
             }
         }
         stage ('deploy to prod') {
