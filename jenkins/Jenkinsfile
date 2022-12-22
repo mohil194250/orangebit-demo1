@@ -6,6 +6,7 @@ pipeline {
        // string( description: "git feature name", name: "GIT_FEATURE_BRANCH")
     }
     stages {
+        script {
             def BRANCH_NAME = sh(returnStdout: true, script: 'git rev-parse --abbrev-ref HEAD').trim()
               echo ${BRANCH_NAME}
             }
