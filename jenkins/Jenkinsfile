@@ -6,13 +6,7 @@ pipeline {
        // string( description: "git feature name", name: "GIT_FEATURE_BRANCH")
     }
     stages {
-        stage ('branch name') {
-            steps {
-              sh "git rev-parse --abbrev-ref HEAD > GIT_BRANCH"
-              sh "git_branch = readFile('GIT_BRANCH').trim()"
-              sh "echo git_branch"
-            }
-        }
+        
         stage ('build') {
             steps {
                 sh "sudo docker build -t humancloudak/k8-poc:${BRANCH_NAME} ."
