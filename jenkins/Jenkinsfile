@@ -9,15 +9,15 @@ pipeline {
         
         stage ('build') {
             steps {
-                sh "sudo docker build -t humancloudak/k8-poc:${BRANCH} ."
-                sh "sudo docker push humancloudak/k8-poc"
+                sh "sudo docker build -t humancloudak/k8-poc:${BRANCH_NAME} ."
+                sh "sudo docker push humancloudak/k8-poc:${BRANCH_NAME}"
             }
         }
-        stage ('deploy to ${BRANCH}') {
+        stage ('deploy to ${BRANCH_NAME}') {
             steps {
                 sh "aws eks update-kubeconfig --region us-west-2 --name eks-test-cluster"
-                sh "kubectl create namespace ${BRANCH}"
-                sh "helm upgrade --install ${BRANCH} --set image.repository=humancloudak/k8-poc --set image.tag=${BRANCH} --set image.pullPolicy=Always bitnami/apache -n ${BRANCH}"
+                sh "kubectl create namespace ${BRANCH_NAME}"
+                sh "helm upgrade --install ${BRANCH_NAME} --set image.repository=humancloudak/k8-poc --set image.tag=${BRANCH_NAME} --set image.pullPolicy=Always bitnami/apache -n ${BRANCH_NAME}"
             }
         }
         
