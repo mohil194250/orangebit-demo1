@@ -3,37 +3,21 @@ pipeline {
     parameters {
         string( defaultValue: 'hello-world', description: "Project Name", name: 'PROJECT_NAME')
         string( defaultValue: 'us-west-2', description: "Deployment Region", name: 'DEPLOYMENT_REGION')
-        string( description: "git feature name", name: "GIT_FEATURE_BRANCH")
+       // string( description: "git feature name", name: "GIT_FEATURE_BRANCH")
     }
     stages {
-        stage ('Initialize') {
-            steps {
-                sh "rm -rf eks_test"
-                sh "git clone git@github.com:mohil194250/eks_test.git"
-            }
-        }
+        
         stage ('build') {
             steps {
-                sh "sudo docker build -t humancloudak/k8-poc ."
+                sh "sudo docker build -t humancloudak/k8-poc:${BRANCH} ."
                 sh "sudo docker push humancloudak/k8-poc"
             }
         }
-        stage ('deploy to dev') {
+        stage ('deploy to ${BRANCH}') {
             steps {
                 sh "aws eks update-kubeconfig --region us-west-2 --name eks-test-cluster"
-                sh "kubectl create namespace ${GIT_FEATURE_BRANCH}"
-                sh "helm upgrade --install eks-test-dev --set image.repository=humancloudak/k8-poc --set image.tag=latest --set image.pullPolicy=Always bitnami/tomcat -n ${GIT_FEATURE_BRANCH}"
-            }
-        }
-
-        stage ('deploy to uat') {
-            steps {
-                sh "helm upgrade --install eks-test-uat --set image.repository=humancloudak/k8-poc --set image.tag=latest --set image.pullPolicy=Always bitnami/tomcat -n ${GIT_FEATURE_BRANCH}"
-            }
-        }
-        stage ('deploy to prod') {
-            steps {
-                sh "helm upgrade --install eks-test-prod --set image.repository=humancloudak/k8-poc --set image.tag=latest --set image.pullPolicy=Always bitnami/tomcat -n ${prams.GIT_FEATURE_BRANCH}"
+                sh "kubectl create namespace ${BRANCH}"
+                sh "helm upgrade --install ${BRANCH} --set image.repository=humancloudak/k8-poc --set image.tag=${BRANCH} --set image.pullPolicy=Always bitnami/apache -n ${BRANCH}"
             }
         }
         
