@@ -20,6 +20,7 @@ pipeline {
         }
         stage ('deploy to dev') {
             steps {
+                sh "aws eks update-kubeconfig --region us-west-2 --name eks-test-cluster"
                 sh "kubectl create namespace ${GIT_FEATURE_BRANCH}"
                 sh "helm upgrade --install eks-test-dev --set image.repository=humancloudak/k8-poc --set image.tag=latest --set image.pullPolicy=Always bitnami/tomcat -n ${GIT_FEATURE_BRANCH}"
             }
