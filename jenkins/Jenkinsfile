@@ -13,7 +13,7 @@ pipeline {
                 sh "sudo docker push humancloudak/k8-poc:$GIT_BRANCH"
             }
         }
-        stage ('deploy to ${BRANCH_NAME}') {
+        stage ('Deploy') {
             steps {
                 sh "aws eks update-kubeconfig --region us-west-2 --name eks-test-cluster"
                 sh "kubectl create namespace $GIT_BRANCH"
