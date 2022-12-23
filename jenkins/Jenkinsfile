@@ -1,23 +1,24 @@
 pipeline {
     agent any
     parameters {
-        string( defaultValue: 'hello-world', description: "Project Name", name: 'PROJECT_NAME')
-        string( defaultValue: 'us-west-2', description: "Deployment Region", name: 'DEPLOYMENT_REGION')
-       // string( description: "git feature name", name: "GIT_FEATURE_BRANCH")
+         gitParameter branchFilter: 'origin/feature/(.*)', defaultValue: '', name: 'BRANCH', type: 'PT_BRANCH'
     }
     stages {
-        
         stage ('build') {
             steps {
-                sh "sudo docker build -t humancloudak/k8-poc:$GIT_BRANCH ."
-                sh "sudo docker push humancloudak/k8-poc:$GIT_BRANCH"
+                sh "sudo docker build -t humancloudak/k8-poc ."
+                sh "sudo docker tag humancloudak/k8-poc:latest humancloudak/k8-poc:${params.BRANCH}.${BUILD_ID}"
+                sh "sudo docker push humancloudak/k8-poc:${params.BRANCH}.${BUILD_ID}"
+                
             }
         }
         stage ('Deploy') {
             steps {
+                
                 sh "aws eks update-kubeconfig --region us-west-2 --name eks-test-cluster"
-                sh "kubectl create namespace $GIT_BRANCH"
-                sh "helm upgrade --install $GIT_BRANCH --set image.repository=humancloudak/k8-poc --set image.tag=$GIT_BRANCH --set image.pullPolicy=Always bitnami/apache -n $GIT_BRANCH"
+                sh "chmod +x namespacecheck.sh; bash -x namespacecheck.sh ${params.BRANCH}"             
+                sh "helm upgrade --install oragebitdemo-${params.BRANCH} oragne-bit-demo/ --set image.repository=humancloudak/k8-poc --set image.tag=${params.BRANCH}.${BUILD_ID} -n ${params.BRANCH}"
+                sh "kubectl apply -f ingress.yaml -n ${params.BRANCH}"
             }
         }
         
@@ -37,3 +38,4 @@ pipeline {
         //         sh "helm upgrade --install eks-test-prod --set image.repository=humancloudak/k8-poc --set image.tag=latest --set image.pullPolicy=Always bitnami/tomcat -n prod"
         //     }
         // }
+        // Hello Hello

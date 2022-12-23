@@ -1,3 +1,4 @@
-FROM bitnami/tomcat:latest
-ENV ALLOW_EMPTY_PASSWORD=yes
-COPY SampleWebApp.war /opt/bitnami/tomcat/webapps_default
+FROM httpd:2.4
+USER root
+COPY index.html /usr/local/apache2/htdocs/
+EXPOSE 80
