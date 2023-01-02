@@ -18,6 +18,7 @@ pipeline {
                 sh "aws eks update-kubeconfig --region us-west-2 --name eks-test-cluster"
                 sh "chmod +x namespacecheck.sh; bash -x namespacecheck.sh ${params.BRANCH}-demo1"             
                 sh "helm upgrade --install oragebitdemo-${params.BRANCH} oragne-bit-demo/ --set image.repository=humancloudak/k8-poc --set image.tag=${params.BRANCH}.${BUILD_ID} -n ${params.BRANCH}-demo1"
+                sh "NAMESPACE=${params.BRANCH}"
                 sh "kubectl apply -f ingress.yaml -n ${params.BRANCH}-demo1"
             }
         }
@@ -25,17 +26,3 @@ pipeline {
     }
     
 }
-
-
-        // // stage ('deploy') {
-        //     if (env.branch_name == 'dev') {
-        //         sh "helm upgrade --install eks-test-dev --set image.repository=humancloudak/k8-poc --set image.tag=latest --set image.pullPolicy=Always bitnami/tomcat -n dev"
-        //     }
-        //     elif (env.branch_name == 'uat') {
-        //         sh "helm upgrade --install eks-test-uat --set image.repository=humancloudak/k8-poc --set image.tag=latest --set image.pullPolicy=Always bitnami/tomcat -n uat"
-        //     }
-        //     elif (env.branch_name == "prod") {
-        //         sh "helm upgrade --install eks-test-prod --set image.repository=humancloudak/k8-poc --set image.tag=latest --set image.pullPolicy=Always bitnami/tomcat -n prod"
-        //     }
-        // }
-        // Hello Hello
