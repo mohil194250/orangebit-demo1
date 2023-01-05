@@ -7,7 +7,7 @@ metadata:
 spec:
     ingressClassName: nginx
     rules:
-      - host: aman.orangebitsindia.com
+      - host: priyanka.orangebitsindia.com
         http:
           paths:
             - pathType: Prefix
@@ -16,4 +16,4 @@ spec:
                   name: oragebitdemo1-NAMESPACE-oragne-bit-demo
                   port:
                     number: 80
-              path: /demo1
+              path: /demo1/priyanka
