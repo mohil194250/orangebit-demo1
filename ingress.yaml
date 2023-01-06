@@ -1,7 +1,7 @@
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-    name: myingress
+    name: myingress1
     annotations:
       nginx.ingress.kubernetes.io/rewrite-target: /
 spec:
@@ -16,4 +16,4 @@ spec:
                   name: oragebitdemo1-NAMESPACE-oragne-bit-demo
                   port:
                     number: 80
-              path: /demo1/priyanka
+              path: /demo1/abc-123
